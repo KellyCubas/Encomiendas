@@ -1,0 +1,16 @@
+from django.core.exceptions import ValidationError
+
+
+def validar_peso_positivo(value):
+    if value <= 0:
+        raise ValidationError(f'El peso debe ser mayor a 0. Recibio: {value} kg')
+
+
+def validar_codigo_encomienda(value):
+    if not value.startswith('ENC-'):
+        raise ValidationError('El codigo de encomienda debe comenzar con ENC-')
+
+
+def validar_nro_doc_dni(value):
+    if not value.isdigit() or len(value) != 8:
+        raise ValidationError('El DNI debe contener exactamente 8 digitos numericos')
