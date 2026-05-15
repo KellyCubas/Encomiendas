@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from decouple import config
 
@@ -38,12 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'django_filters',
+    'drf_spectacular',
+    'corsheaders',
     'envios',
     'clientes',
     'rutas',
+    'api',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -143,3 +151,63 @@ SESSION_COOKIE_NAME = 'encomiendas_session'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.EncomiendaPagination',
+    'PAGE_SIZE': 15,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'EXCEPTION_HANDLER': 'api.exceptions.custom_exception_handler',
+    'DEFAULT_THROTTLE_CLASSES': [
+        'api.throttles.EmpleadoRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'empleado': '1000/day',
+        'login': '10/min',
+    },
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Sistema de Encomiendas',
+    'DESCRIPTION': 'API REST para gestionar clientes, rutas y encomiendas.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000',
+).split(',')
+
+CACHE_TTL = 60 * 15
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': config('REDIS_URL', default='redis://redis:6379/1'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+    }
+}
+
+if DEBUG:
+    INSTALLED_APPS += ['silk']
+    MIDDLEWARE += ['silk.middleware.SilkyMiddleware']
+    SILKY_PYTHON_PROFILER = True

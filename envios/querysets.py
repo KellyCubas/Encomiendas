@@ -36,7 +36,7 @@ class EncomiendaQuerySet(models.QuerySet):
     def con_relaciones(self):
         return self.select_related(
             'remitente', 'destinatario', 'ruta', 'empleado_registro'
-        )
+        ).prefetch_related('historial', 'historial__empleado')
 
 
 class ClienteQuerySet(models.QuerySet):

@@ -10,6 +10,7 @@ services:
       - .env
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:15-alpine
@@ -33,6 +34,11 @@ services:
       - db
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
 
 volumes:
   postgres_data:
