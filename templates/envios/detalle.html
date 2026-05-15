@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ encomienda.codigo }} - Encomiendas{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="h3">{{ encomienda.codigo }}</h2>
+  <a href="{% url 'encomienda_lista' %}" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card shadow mb-3">
+      <div class="card-header bg-white"><strong>Informacion de la encomienda</strong></div>
+      <div class="card-body">
+        <p><strong>Descripcion:</strong> {{ encomienda.descripcion }}</p>
+        <p><strong>Peso:</strong> {{ encomienda.peso_kg }} kg</p>
+        <p><strong>Costo:</strong> S/ {{ encomienda.costo_envio }}</p>
+        <p><strong>Ruta:</strong> {{ encomienda.ruta.origen }} - {{ encomienda.ruta.destino }}</p>
+        <p><strong>Remitente:</strong> {{ encomienda.remitente.nombre_completo }}</p>
+        <p><strong>Destinatario:</strong> {{ encomienda.destinatario.nombre_completo }}</p>
+        <p><strong>Estado:</strong> <span class="badge-estado badge-{{ encomienda.estado }}">{{ encomienda.get_estado_display }}</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow mb-3">
+      <div class="card-header bg-white"><strong>Cambiar estado</strong></div>
+      <div class="card-body">
+        <form method="post" action="{% url 'encomienda_cambiar_estado' encomienda.pk %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <select name="estado" class="form-select">
+              {% for value, label in estados %}
+              <option value="{{ value }}" {% if encomienda.estado == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <textarea name="observacion" class="form-control" rows="2" placeholder="Observacion"></textarea>
+          </div>
+          <button class="btn btn-primary w-100" type="submit">Actualizar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow">
+  <div class="card-header bg-white"><strong>Historial de estados</strong></div>
+  <div class="card-body p-0">
+    <table class="table mb-0">
+      <thead><tr><th>Fecha</th><th>Anterior</th><th>Nuevo</th><th>Empleado</th><th>Observacion</th></tr></thead>
+      <tbody>
+        {% for h in historial %}
+        <tr>
+          <td>{{ h.fecha_cambio }}</td>
+          <td><span class="badge-estado badge-{{ h.estado_anterior }}">{{ h.get_estado_anterior_display }}</span></td>
+          <td><span class="badge-estado badge-{{ h.estado_nuevo }}">{{ h.get_estado_nuevo_display }}</span></td>
+          <td>{{ h.empleado }}</td>
+          <td>{{ h.observacion }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center py-4">Sin historial registrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

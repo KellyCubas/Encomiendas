@@ -1,0 +1,95 @@
+body {
+  background: #f6f7f9;
+}
+
+:root {
+  --color-primary: #0d6efd;
+  --estado-pendiente-bg: #e9ecef;
+  --estado-pendiente-text: #495057;
+  --estado-transito-bg: #cfe2ff;
+  --estado-transito-text: #084298;
+  --estado-destino-bg: #fff3cd;
+  --estado-destino-text: #664d03;
+  --estado-entregado-bg: #d1e7dd;
+  --estado-entregado-text: #0a3622;
+  --estado-devuelto-bg: #f8d7da;
+  --estado-devuelto-text: #58151c;
+}
+
+.card {
+  border-radius: 8px;
+}
+
+code {
+  color: #0d6efd;
+}
+
+.badge-estado {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: .78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-PE {
+  background-color: var(--estado-pendiente-bg);
+  color: var(--estado-pendiente-text);
+}
+
+.badge-TR {
+  background-color: var(--estado-transito-bg);
+  color: var(--estado-transito-text);
+}
+
+.badge-DE {
+  background-color: var(--estado-destino-bg);
+  color: var(--estado-destino-text);
+}
+
+.badge-EN {
+  background-color: var(--estado-entregado-bg);
+  color: var(--estado-entregado-text);
+}
+
+.badge-DV {
+  background-color: var(--estado-devuelto-bg);
+  color: var(--estado-devuelto-text);
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  font-size: .82rem;
+  text-transform: uppercase;
+  color: #6c757d;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(13, 110, 253, .04);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .15);
+}
+
+.pagination .page-link {
+  color: var(--color-primary);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.alert {
+  animation: fadeAlert 5s ease forwards;
+}
+
+@keyframes fadeAlert {
+  0%, 85% { opacity: 1; }
+  100% { opacity: 0; }
+}
